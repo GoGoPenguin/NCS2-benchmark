@@ -1,0 +1,20 @@
+version: "3.0"
+services:
+    ncsdk:
+        user: root
+        build:
+            context: .
+            dockerfile: dockerfile
+        volumes:
+            - "/dev/bus/usb:/dev/bus/usb:shared"
+            - "/run/udev:/run/udev:ro"
+            - "/media/data2/NCS/:/media/data2/NCS/"
+            - "./src:/root/ncsdk/"
+        restart: always
+        tty: true
+        stdin_open: true
+        privileged: true
+        network_mode: host
+        container_name: ncsdk
+        hostname: ncsdk
+        image: 192.168.1.83:8080/emb-ncsdk:latest
