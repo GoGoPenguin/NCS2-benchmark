@@ -1,6 +1,6 @@
+import sys
 import tensorflow as tf
 from tensorflow.python.framework import graph_io
-from tensorflow.keras.models import load_model
 from tensorflow.python.keras import applications
 
 
@@ -39,38 +39,15 @@ def freeze_graph(
 # This line must be executed before loading Keras model.
 tf.keras.backend.set_learning_phase(0)
 
-models = [
-    applications.VGG16(weights="imagenet"),
-    applications.ResNet50(weights="imagenet"),
-    applications.InceptionV3(weights="imagenet"),
-    applications.MobileNet(weights="imagenet"),
-    applications.MobileNetV2(weights="imagenet"),
-    applications.Xception(weights="imagenet"),
-    applications.NASNetLarge(weights="imagenet"),
-    applications.DenseNet121(weights="imagenet")
-]
+model_name = sys.argv[1]
 
-model_fname = [
-    "VGG16.pb",
-    "ResNet50.pb",
-    "InceptionV3.pb",
-    "MobileNet.pb",
-    "MobileNetV2.pb",
-    "Xception.pb",
-    "NASNetLarge.pb",
-    "DenseNet121.pb"
-]
+model = getattr(applications, model_name)(weights="imagenet")
 
-for i in range(len(models)):
-    model = models[i]
+session = tf.keras.backend.get_session()
 
-    session = tf.keras.backend.get_session()
-
-    frozen_graph = freeze_graph(
-        session.graph, session,
-        [out.op.name for out in model.outputs],
-        save_pb_dir=save_pb_dir,
-        save_pb_name=model_fname[i]
-    )
-
-    del model
+frozen_graph = freeze_graph(
+    session.graph, session,
+    [out.op.name for out in model.outputs],
+    save_pb_dir=save_pb_dir,
+    save_pb_name=model_name+'.pb'
+)
