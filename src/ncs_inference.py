@@ -45,7 +45,7 @@ model_bin = './optimization/'+model+'.bin'
 plugin_dir = None
 
 # Devices: GPU (intel), CPU, MYRIAD
-plugin = IEPlugin("CPU", plugin_dirs=plugin_dir)
+plugin = IEPlugin("MYRIAD", plugin_dirs=plugin_dir)
 
 # Read IR
 net = IENetwork(model=model_xml, weights=model_bin)
